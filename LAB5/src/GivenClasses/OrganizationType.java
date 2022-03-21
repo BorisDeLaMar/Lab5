@@ -6,5 +6,7 @@ public enum OrganizationType {
     GOVERNMENT,
     TRUST,
     PRIVATE_LIMITED_COMPANY;
-	
+	public static String strConvert() {
+		return "COMMERCIAL, GOVERNMENT, TRUST, PRIVATE_LIMITED_COMPANY";
+	}
 }
