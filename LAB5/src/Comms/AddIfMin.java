@@ -10,7 +10,7 @@ public class AddIfMin implements Commands{
 		Worker w = new Worker();
 		if(args.length != 8) {
 			System.out.println(args.length);
-			throw new LimitException("There should be 8 args for add function. Type space one time for null argument (only for Position and Organization possible)");
+			throw new LimitException("There should be 8 args for add function. Null for organization type or position is NULL. Use null for the company name if there's not one\\nOnly one space between arguments");
 		}
 		else {
 			for(int i = 0; i < args.length; i++) {

@@ -9,7 +9,7 @@ public class History implements Commands{
 		while(this.q.peek() != null) {
 			//System.out.println(this.q.pop().getName());
 			Commands cmd = this.q.pop();
-			list += "\n" + cmd.getName();
+			list += cmd.getName() + "\n";
 		}
 		return list;
 		

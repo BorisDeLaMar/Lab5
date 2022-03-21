@@ -7,12 +7,15 @@ public class Update implements Commands{
 	
 	public void update_by_id(DAO<Worker> dao, long id, String[] args) throws NullException, LimitException{
 		Worker w = dao.get(id);
-		if(w == null) {
+		if(id < 1) {
+			throw new NullException("Id should be more than zero at least");
+		}
+		else if(w == null) {
 			throw new NullException("There is no guy with such id");
 		}
 		else {
 			if(args.length == 0 || args.length > 8) {
-				throw new LimitException("The number of available args for update function is from 1 to 8 + u need to enter id firstly");
+				throw new LimitException("The number of available args for update function is from 1 to 8. You also need to enter id firstly. NULL for position and organization type are possible, null for company name\nOnly one space between arguments");
 			}
 			else {
 				//System.out.println(args.length);
@@ -31,7 +34,7 @@ public class Update implements Commands{
 							w.setSalary(salary);
 						}
 						catch(NumberFormatException e) {
-							System.out.println("Salary should be just a number");
+							System.out.println("Salary should be just a number. The real number, not the miracle one");
 						}
 						catch(LimitException e) {
 							System.out.println(e.getMessage());
@@ -62,8 +65,12 @@ public class Update implements Commands{
 						Organization org = new Organization(args[i], args[i+1]);
 						w.setOrganization(org);
 					}
-					if(i == 6) {
+					if((i == 6) && (i+1 < args.length)) {
 						Coordinates cords = new Coordinates(args[i], args[i+1]);
+						w.setCoordinates(cords);
+					}
+					else if((i == 6) && (i+1 >= args.length)){
+						Coordinates cords = new Coordinates(args[i], w.getCoordinates().getOrdinate());
 						w.setCoordinates(cords);
 					}
 				}

@@ -199,6 +199,9 @@ public class Gist extends GistStaff{
 					}
 					upd.update_by_id(dao, id, arg);
 				}
+				catch(IllegalArgumentException e) {
+					System.out.println("Id should be type long");
+				}
 				catch(LimitException e) {
 					System.out.println(e.getMessage());
 				}

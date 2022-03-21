@@ -40,7 +40,12 @@ public class DataDAO implements DAO<Worker>{
 					hname = o.getString("name");
 					hsalary = o.getLong("salary");
 					//есть o.getEnum но я не пон как аргументы в него вставить правильно
-					hpos = Position.valueOf(o.getString("position"));
+					if(o.getString("position") == "null") {
+						hpos = null;
+					}
+					else {
+						hpos = Position.valueOf(o.getString("position"));
+					}
 					hstatus = Status.valueOf(o.getString("status"));
 					JSONArray org = o.getJSONArray("organization");
 					horganization = new Organization(org);

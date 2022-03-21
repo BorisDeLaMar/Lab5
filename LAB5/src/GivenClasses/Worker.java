@@ -48,7 +48,7 @@ public class Worker implements Comparable<Worker>{
     }
     public void setId(long id) throws NullException{
     	if(id == 0) {
-    		throw new NullException("id не может быть равен 0");
+    		throw new NullException("Id couldn't be 0");
     	}
     	else {
     		this.id = id;
@@ -60,7 +60,7 @@ public class Worker implements Comparable<Worker>{
     }
     public void setName(String name) throws NullException{
     	if(name == null || name == "") {
-    		throw new NullException("Поле name не может быть ни null, ни пустой строкой. Хватит баловаться!");
+    		throw new NullException("Name couldn't be null");
     	}
     	else {
     		this.name = name;
@@ -71,8 +71,14 @@ public class Worker implements Comparable<Worker>{
     	return coordinates;
     }
     public void setCoordinates(Coordinates coordinates) throws LimitException{
-    	if(coordinates == null || coordinates.getAbscissa() > 176 || coordinates.getOrdinate() > 729) {
-    		throw new LimitException("Поле coordinates не может быть null, x не может быть больше 176, а y не должен превышать 729");
+    	if(coordinates == null) {
+    		throw new LimitException("Coordinates couldn't be null");
+    	}
+    	if(coordinates.getAbscissa() > 176) {
+    		throw new LimitException("x should be no more than 176");
+    	}
+    	if(coordinates.getOrdinate() > 729) {
+    		throw new LimitException("y is no more than 729");
     	}
     	else {
     		this.coordinates = coordinates;
@@ -84,7 +90,7 @@ public class Worker implements Comparable<Worker>{
     }
     public void setCreationDate(LocalDateTime creationDate) throws NullException{
     	if(creationDate == null) {
-    		throw new NullException("Поле creationDate не может быть null");
+    		throw new NullException("CreationDate can't be null");
     	}
     	else {
     		this.creationDate = creationDate;
