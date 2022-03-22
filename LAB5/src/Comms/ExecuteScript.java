@@ -33,6 +33,11 @@ public class ExecuteScript implements Commands{
 		Update upd = new Update();
 		History history = new History();
 		ExecuteScript exec = new ExecuteScript();
+		/** 
+		 *Executes script from file
+		 *@param All the available commands
+		 *@author AP  
+		*/
 		
 		try(BufferedReader on = new BufferedReader(new FileReader(filename))){
 			while(flag) {

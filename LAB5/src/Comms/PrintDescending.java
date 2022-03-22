@@ -3,6 +3,11 @@ import java.util.*;
 import GivenClasses.*;
 
 public class PrintDescending implements Commands{
+	/** 
+	 *Prints elements in descending order
+	 *@param DAO<Worker> dao
+	 *@author BARIS 
+	*/
 	
 	public String print_descending(DAO<Worker> dao) {
 		Sort srt = new Sort();

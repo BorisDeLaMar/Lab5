@@ -5,6 +5,11 @@ import java.util.LinkedHashSet;
 
 public class RemoveLower implements Commands{
 	Remove rm = new Remove();
+	/** 
+	 *Removes all the elements lower than given
+	 *@param DAO<Worker> dao, long id
+	 *@author BARIS 
+	*/
 	
 	public void remove_lower(DAO<Worker> dao, long id) {
 		Worker w = dao.get(id);

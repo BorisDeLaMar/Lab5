@@ -3,6 +3,11 @@ import GivenClasses.*;
 import java.util.LinkedHashSet;
 
 public class PrintUniqueStatus implements Commands{
+	/** 
+	 *Prints status of each element
+	 *@param DAO<Worker> dao
+	 *@author BARIS 
+	*/
 	
 	public String print_unique_status(DAO<Worker> dao) {
 		LinkedHashSet<Worker> bd = dao.getAll();

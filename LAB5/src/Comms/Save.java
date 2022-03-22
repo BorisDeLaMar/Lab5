@@ -11,6 +11,11 @@ import javax.json.*;
 //import java.io.File;
 
 public class Save implements Commands{
+	/** 
+	 *Saves collection to the file
+	 *@param DAO<Worker> dao, String filepath
+	 *@author BARIS 
+	*/
 	
 	public void save(DAO<Worker> dao, String filepath) {
 		try {

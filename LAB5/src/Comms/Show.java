@@ -5,6 +5,11 @@ import java.util.LinkedHashSet;
 import GivenClasses.Worker;
 
 public class Show implements Commands{
+	/** 
+	 *Prints collection
+	 *@param DAO<Worker> d
+	 *@author BARIS 
+	*/
 	private static DAO<Worker> dao;
 	
 	public String show(DAO<Worker> d) {

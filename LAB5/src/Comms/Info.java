@@ -7,6 +7,11 @@ import java.nio.file.attribute.*;
 import GivenClasses.Worker;
 
 public class Info implements Commands{
+	/** 
+	 *Prints info about collection
+	 *@param DAO<Worker> dao
+	 *@author BARIS 
+	*/
 	
 	public String info(DAO<Worker> dao) {
 		try {

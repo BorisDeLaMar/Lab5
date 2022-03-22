@@ -7,10 +7,15 @@ import java.util.LinkedHashSet;
 public class AddIfMin implements Commands{
 	
 	public void add_if_min(DAO<Worker> dao, String[] args) throws LimitException{
+		/** 
+		 *Adds element if it's minimum of all the elements
+		 *@param DAO<Worker> dao, String[] args
+		 *@author BARIS  
+		*/
 		Worker w = new Worker();
 		if(args.length != 8) {
 			System.out.println(args.length);
-			throw new LimitException("There should be 8 args for add function. Null for organization type or position is NULL. Use null for the company name if there's not one\\nOnly one space between arguments");
+			throw new LimitException("There should be 8 args for add function. Null for organization type or position is NULL. Use null for the company name if there's not one\nOnly one space between arguments");
 		}
 		else {
 			for(int i = 0; i < args.length; i++) {

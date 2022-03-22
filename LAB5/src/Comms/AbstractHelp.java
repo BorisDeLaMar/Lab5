@@ -19,7 +19,11 @@ public class AbstractHelp {
 	private static Commands cmd13 = new History();
 	private static Commands cmd14 = new ExecuteScript();
 	private static Commands cmd15 = new Exit();
-	
+	/** 
+	 *Just a help class for
+	 *@param All the available commands
+	 *@author AP  
+	*/
 	protected static ArrayList<Commands> lst = new ArrayList<Commands>();
 	
 	protected static void addToList() {

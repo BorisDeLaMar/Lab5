@@ -3,6 +3,11 @@ package Comms;
 
 public class Exit implements Commands{
 	private boolean flag = false;
+	/** 
+	 *Shuts down the programm
+	 *@param flag
+	 *@author BARIS  
+	*/
 	public boolean exit() {
 		return flag;
 	}

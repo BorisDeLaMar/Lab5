@@ -4,6 +4,11 @@ import Exceptions.NullException;
 import GivenClasses.*;
 
 public class Update implements Commands{
+	/** 
+	 *Updates element by id and given args
+	 *@param DAO<Worker> dao, long id, String[] args
+	 *@author BARIS 
+	*/
 	
 	public void update_by_id(DAO<Worker> dao, long id, String[] args) throws NullException, LimitException{
 		Worker w = dao.get(id);

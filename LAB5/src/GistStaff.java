@@ -12,5 +12,10 @@ public class GistStaff {
 	Status hstatus;
 	Organization horganization;		
 	Coordinates hcoordinates;	
+	/** 
+	 *Just a help class for Gist
+	 *@param hname, hsalary, hpos, hstatus, horganization, hcoordinates
+	 *@author BARIS
+	*/
 	//LinkedHashSet database = new LinkedHashSet<>();
 }

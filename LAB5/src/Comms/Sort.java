@@ -3,6 +3,11 @@ import GivenClasses.*;
 import java.util.*;
 
 public class Sort{
+	/** 
+	 *Sorts the collection
+	 *@param DAO<Worker> dao
+	 *@author AP
+	*/
 	
 	public TreeSet<Worker> sort(DAO<Worker> dao){
 		LinkedHashSet<Worker> bd = dao.getAll();

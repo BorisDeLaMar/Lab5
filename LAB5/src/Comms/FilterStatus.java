@@ -3,6 +3,11 @@ import GivenClasses.*;
 import java.util.LinkedHashSet;
 
 public class FilterStatus implements Commands{
+	/** 
+	 *Prints every elements which status is lower than given
+	 *@param DAO<Worker> dao, Status state
+	 *@author BARIS 
+	*/
 	
 	public String filter_less_than_status(DAO<Worker> dao, Status state) {
 		LinkedHashSet<Worker> bd = dao.getAll();

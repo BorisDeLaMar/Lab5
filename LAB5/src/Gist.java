@@ -12,13 +12,14 @@ import java.util.LinkedHashSet;
 public class Gist extends GistStaff{
 	private static DAO<Worker> dao = new DataDAO(); //Не забыть ко всем выводам ошибок предложить потом еще раз ввести знач
 	public static void main(String[] args) {
-		/** Чтение из файла */
+		/** 
+		 *All the main functions
+		 *@author BARIS  
+		*/
 		String filepath = System.getenv("FPATH");
 		dao.DateRead(filepath);
 		//String filepath = "C:\\Рабочий стол\\GitLabs\\Lab5\\Data.json";
-		/**Чтение закончили */
 		
-		/**Чтение консольных команд*/
 		Gist gs = new Gist();
 		gs.read();
 	}
@@ -45,6 +46,11 @@ public class Gist extends GistStaff{
 		History history = new History();
 		ExecuteScript exec = new ExecuteScript();
 		
+		/** 
+		 *Reads function
+		 *@param All the available commands
+		 *@author AP  
+		*/
 		//Scanner in = new Scanner(System.in);
 		while(flag) {
 			//in.hasNext()

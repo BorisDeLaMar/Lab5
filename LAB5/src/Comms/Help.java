@@ -1,6 +1,10 @@
 package Comms;
 
 public class Help extends AbstractHelp implements Commands{
+	/** 
+	 *Prints available commands
+	 *@author BARIS 
+	*/
 	
 	public String help() {
 		Help.addToList();

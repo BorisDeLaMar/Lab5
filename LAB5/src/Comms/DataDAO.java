@@ -11,6 +11,11 @@ import GivenClasses.*;
 //import Exceptions.*;
 
 public class DataDAO implements DAO<Worker>{
+	/** 
+	 *Collection class
+	 *@param DAO<Worker> dao, String[] args
+	 *@author BARIS  
+	*/
 	
 	private LinkedHashSet<Worker> database = new LinkedHashSet<Worker>();
 	String filepath;
@@ -27,8 +32,14 @@ public class DataDAO implements DAO<Worker>{
 	}
 	
 	/**Чтение из файла*/
-	@Override
+	//@Override
 	public void DateRead(String filename) {
+		/** 
+		 *Add function
+		 *@param String filename
+		 *@author BARIS  
+		 *@throws IllegalArgumentException, JSONException, IOException
+		*/
 		filepath = filename;
 		try(BufferedReader in = new BufferedReader(new FileReader(filepath))){
 			JSONTokener tokener = new JSONTokener(in);
@@ -68,7 +79,9 @@ public class DataDAO implements DAO<Worker>{
 	}
 	
 	
-	/**Реализация функций DAO*/
+	/**
+	 *DAO functions 
+	 */
 	Worker clerk = new Worker();
 	@Override
 	public void appendToList(Worker w) {
@@ -79,9 +92,7 @@ public class DataDAO implements DAO<Worker>{
 		database.remove(w);
 	}
 	@Override
-	public void update(Worker w){
-		
-	}
+	public void update(Worker w){}
 	@Override
 	public Worker get(long id) {
 		for(Worker w : database) {
