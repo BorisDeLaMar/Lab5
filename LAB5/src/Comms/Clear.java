@@ -1,5 +1,7 @@
 package Comms;
 import GivenClasses.*;
+
+import java.util.ArrayDeque;
 //import java.util.LinkedHashSet;
 import java.util.ArrayList;
 
@@ -26,4 +28,14 @@ public class Clear implements Commands{
 	public String getName() {
 		return "clear";
 	}
+	@Override
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line) {
+		Clear cl = new Clear();
+		if(q != null && q.size() == 7) {
+			q.removeFirst();
+		}
+		q.addLast(cl);
+		cl.clear(dao);
+		return q;
+		}
 }

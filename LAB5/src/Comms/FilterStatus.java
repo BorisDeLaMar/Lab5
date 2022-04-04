@@ -1,5 +1,7 @@
 package Comms;
 import GivenClasses.*;
+
+import java.util.ArrayDeque;
 import java.util.LinkedHashSet;
 
 public class FilterStatus implements Commands{
@@ -29,5 +31,24 @@ public class FilterStatus implements Commands{
 	@Override
 	public String getName() {
 		return "filter_less_than_status";
+	}
+	@Override
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line) {
+		FilterStatus st = new FilterStatus();
+		if(q != null && q.size() == 7) {
+			q.removeFirst();
+		}
+		q.addLast(st);
+		try {
+			Status state = Status.valueOf(line[1]);
+			System.out.println(st.filter_less_than_status(dao, state));
+		}
+		catch(IllegalArgumentException e) {
+			System.out.println("Available status values:" + Status.strConvert());
+		}
+		catch(ArrayIndexOutOfBoundsException e) {
+			System.out.println("There should be an index argument");
+		}
+		return q; //надо в final пихать? И в др командах тоже
 	}
 }

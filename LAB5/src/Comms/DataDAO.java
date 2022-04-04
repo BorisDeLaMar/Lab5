@@ -14,7 +14,7 @@ public class DataDAO implements DAO<Worker>{
 	/** 
 	 *Collection class
 	 *@param DAO<Worker> dao, String[] args
-	 *@author BARIS  
+	 *@author AP
 	*/
 	
 	private LinkedHashSet<Worker> database = new LinkedHashSet<Worker>();
@@ -26,6 +26,22 @@ public class DataDAO implements DAO<Worker>{
 	Status hstatus;
 	Organization horganization;		
 	Coordinates hcoordinates;
+	private static boolean flag;
+	public static boolean getFlag() {
+		return flag;
+	}
+	public static void setFlag(boolean f) {
+		flag = f;
+	}
+	
+	private static long id_count = 1;
+	public static long getIDCounter() {
+		return id_count;
+	}
+	public static void incrementID() {
+		id_count += 1;
+	}
+	//private static long available_id;
 	
 	public DataDAO() {
 		
@@ -33,7 +49,7 @@ public class DataDAO implements DAO<Worker>{
 	
 	/**Чтение из файла*/
 	//@Override
-	public void DateRead(String filename) {
+	public void DateRead(String filename, DAO<Worker> dao) {
 		/** 
 		 *Add function
 		 *@param String filename
@@ -42,11 +58,12 @@ public class DataDAO implements DAO<Worker>{
 		*/
 		filepath = filename;
 		try(BufferedReader in = new BufferedReader(new FileReader(filepath))){
-			JSONTokener tokener = new JSONTokener(in);
-			JSONObject obj =  new JSONObject(tokener);
 			try {
+				JSONTokener tokener = new JSONTokener(in);
+				JSONObject obj =  new JSONObject(tokener);
 				JSONArray arr = obj.getJSONArray("workers");
 				for(int i = 0; i < arr.length(); i++) {
+					flag = true;
 					JSONObject o = arr.getJSONObject(i);
 					hname = o.getString("name");
 					hsalary = o.getLong("salary");
@@ -58,18 +75,28 @@ public class DataDAO implements DAO<Worker>{
 						hpos = Position.valueOf(o.getString("position"));
 					}
 					hstatus = Status.valueOf(o.getString("status"));
+					String str_id = o.getString("ID");
+					String creationDate = o.getString("CreationDate");
 					JSONArray org = o.getJSONArray("organization");
 					horganization = new Organization(org);
 					JSONArray cord = o.getJSONArray("coordinates");
 					hcoordinates = new Coordinates(cord);
-					Worker worker = new Worker(hname, hsalary, hpos, hstatus, horganization, hcoordinates, i);
-					database.add(worker);
+					Worker worker = new Worker(hname, hsalary, hpos, hstatus, horganization, hcoordinates, str_id, creationDate, dao);
+					if(worker.getId() == -1) {
+						this.delete(worker);
+					}
+					else {
+						this.appendToList(worker);//dao запускает функцию
+					}
+					//id += 1;
 				}
 			}
 			catch(IllegalArgumentException e) {
+				flag = false;
 				System.out.println(e.getMessage());
 			}
 			catch(JSONException e) {
+				flag = false;
 				System.out.println(e.getMessage());
 			}
 		}
@@ -82,17 +109,23 @@ public class DataDAO implements DAO<Worker>{
 	/**
 	 *DAO functions 
 	 */
-	Worker clerk = new Worker();
+	//Worker clerk = new Worker();
 	@Override
 	public void appendToList(Worker w) {
-		database.add(w);
+		if(DataDAO.getFlag()) {
+			database.add(w);
+			if(w.getFlag()) {
+				DataDAO.incrementID();
+				w.setFlag();
+			}
+		}
+		//System.out.println(id_count + " " + w.getName());
 	}
 	@Override
 	public void delete(Worker w) {
+		Worker.removeFromBanned(w.getId());
 		database.remove(w);
 	}
-	@Override
-	public void update(Worker w){}
 	@Override
 	public Worker get(long id) {
 		for(Worker w : database) {

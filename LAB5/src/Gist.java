@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 import Exceptions.*;
 import Comms.*;
 import GivenClasses.*;
@@ -7,17 +8,22 @@ import java.util.ArrayDeque;
 //import java.nio.file.attribute.BasicFileAttributes;
 //import java.nio.file.*;
 //import java.nio.file.attribute.BasicFileAttributes; для времени инициализации, убери потом отседоваЧ
-import java.util.LinkedHashSet;
+//import java.util.LinkedHashSet;
 
 public class Gist extends GistStaff{
 	private static DAO<Worker> dao = new DataDAO(); //Не забыть ко всем выводам ошибок предложить потом еще раз ввести знач
 	public static void main(String[] args) {
+		Worker.bannedID.clear();
+		Help.fillLst();
+		Long c = (long) 0;
+		Worker.bannedID.add(0, c);
 		/** 
 		 *All the main functions
 		 *@author BARIS  
 		*/
 		String filepath = System.getenv("FPATH");
-		dao.DateRead(filepath);
+		dao.DateRead(filepath, dao);
+		DataDAO.setFlag(true);
 		//String filepath = "C:\\Рабочий стол\\GitLabs\\Lab5\\Data.json";
 		
 		Gist gs = new Gist();
@@ -26,25 +32,27 @@ public class Gist extends GistStaff{
 	//Функции мб
 	Scanner in = new Scanner(System.in);
 	public void read() {
-		boolean flag = true;
+		//boolean flag = true;
 		ArrayDeque<Commands> q = new ArrayDeque<Commands>();
-		
-		Clear cl = new Clear();
-		Exit exe = new Exit();
-		Add dd = new Add();
-		AddIfMin aim = new AddIfMin();
-		FilterStatus st = new FilterStatus();
-		Help hlp = new Help();
-		Info inf = new Info();
-		PrintDescending prnt = new PrintDescending();
-		PrintUniqueStatus prntu = new PrintUniqueStatus();
-		Remove rmv = new Remove();
-		RemoveLower rmvl = new RemoveLower();
-		Save save = new Save();
-		Show show = new Show();
-		Update upd = new Update();
-		History history = new History();
-		ExecuteScript exec = new ExecuteScript();
+		//Help hlp = new Help();
+		//Exit exe = new Exit();
+		ArrayList<Commands> cmd = Help.getLst();
+		//System.out.println(cmd.toString());
+		//Clear cl = new Clear();
+		//Add dd = new Add();
+		//AddIfMin aim = new AddIfMin();
+		//FilterStatus st = new FilterStatus();
+		//Help hlp = new Help();
+		//Info inf = new Info();
+		//PrintDescending prnt = new PrintDescending();
+		//PrintUniqueStatus prntu = new PrintUniqueStatus();
+		//Remove rmv = new Remove();
+		//RemoveLower rmvl = new RemoveLower();
+		//Save save = new Save();
+		//Show show = new Show();
+		//Update upd = new Update();
+		//History history = new History();
+		//ExecuteScript exec = new ExecuteScript();
 		
 		/** 
 		 *Reads function
@@ -52,14 +60,25 @@ public class Gist extends GistStaff{
 		 *@author AP  
 		*/
 		//Scanner in = new Scanner(System.in);
-		while(flag) {
+		while(Exit.getExit()) {
 			//in.hasNext()
+			ExecuteScript.file_bdCleaner();
 			String[] line = in.nextLine().split(" ");
-			
-			System.out.println();
 			String command = line[0];
+			//System.out.println(cmd.size());
+			int flag = 0;
+			for(int i = 0; i < cmd.size(); i++) {
+				Commands cm = cmd.get(i);
+				if(cm.getName().equals(command)) {
+					flag += 1;
+					q = cm.executeCommand(dao, q, line);
+				}
+			}
+			if(flag == 0) {
+				System.out.println("Unknown command. Type \"help\" for the list of available commands");
+			}
 			//System.out.println(command);
-			
+			/*
 			if(command.equals("exit")) {
 				if(q != null && q.size() == 7) {
 					q.removeFirst();
@@ -67,7 +86,7 @@ public class Gist extends GistStaff{
 				q.addLast(exe);
 				flag = exe.exit();
 			}
-			else if(command.equals("clear")) {
+			if(command.equals("clear")) {
 				if(q != null && q.size() == 7) {
 					q.removeFirst();
 				}
@@ -228,10 +247,7 @@ public class Gist extends GistStaff{
 				}
 				q.addLast(exec);
 				q = exec.execute_script(dao, line[1], q);
-			}
-			else {
-				System.out.println("Unknown command. Type \"help\" for the list of available commands");
-			}
+			}*/
 		}
 		in.close();
 	}

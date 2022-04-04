@@ -2,6 +2,10 @@ package GivenClasses;
 
 //import java.lang.reflect.*;
 import Exceptions.*;
+
+import Comms.*;
+import java.time.format.*;
+import java.util.ArrayList;
 import java.time.LocalDateTime;
 
 public class Worker implements Comparable<Worker>{
@@ -14,12 +18,20 @@ public class Worker implements Comparable<Worker>{
     private Position position; //Поле может быть null
     private Status status; //Поле не может быть null
     private Organization organization; //Поле может быть null 
+    public static ArrayList<Long> bannedID = new ArrayList<Long>();
+    boolean IdNotFromFile = true;
+    public boolean getFlag() {
+    	return IdNotFromFile;
+    }
+    public void setFlag() {
+    	IdNotFromFile = true;
+    }
     
     private int x;
     private int y;
     private int moneymoney;
     
-    public Worker(String name, long salary, Position pos, Status state, Organization org, Coordinates cords, int i) {
+    public Worker(String name, long salary, Position pos, Status state, Organization org, Coordinates cords, String id, String creationDate, DAO<Worker> dao) {
     	try {
     		setName(name);
     		setSalary(salary);
@@ -27,34 +39,114 @@ public class Worker implements Comparable<Worker>{
     		setStatus(state);
     		setOrganization(org);
     		setCoordinates(cords);
-    		setId(i+1);
-    		setCreationDate(creationDate.now());
+    		setCreationDate(creationDate);
+    		setId(id, dao);
     	   	moneymoney = (int) salary/1000000000;
     		x = (int) coordinates.getAbscissa();
     		y = (int) coordinates.getOrdinate();
     	}
     	catch(NullException e) {
+    		DataDAO.setFlag(false);
     		System.out.println(e.getMessage());
     	}
     	catch(LimitException e) {
+    		DataDAO.setFlag(false);
     		System.out.println(e.getMessage());
     	}
     }
     public Worker() {}
-	    
-    
+	
     public long getId() {
     	return id;
     }
-    public void setId(long id) throws NullException{
-    	if(id == 0) {
-    		throw new NullException("Id couldn't be 0");
+    public void setId(String id, DAO<Worker> dao) throws NullException, LimitException{
+    	if(id == "") {
+    		this.id = Worker.findPossibleID();
+    		bannedID.add(this.id);
     	}
     	else {
-    		this.id = id;
+    		try {
+    			long possible_ID = Long.valueOf(id);
+    			IdNotFromFile = false;
+    	    	//System.out.println(bannedID.size());
+        		for(int c = 0; c < bannedID.size(); c++) {
+        			//System.out.println(possible_ID + " " + bannedID.get(c));
+        			if(possible_ID <= 0) {
+        				this.id = Worker.findPossibleID();
+        				bannedID.add(this.id);
+        				throw new LimitException("Id can't be below 1, so we changed it to appropriate one (" + this.id + ") for " + name);
+        			}
+        			if(possible_ID == bannedID.get(c) || possible_ID <= 0) {
+        				if(false == dao.get(bannedID.get(c)).getFlag()) {
+        					//System.out.println(bannedID.get(c));
+        					//Worker w = dao.get(possible_ID);
+        					this.id = possible_ID;
+        					long idik = Worker.findPossibleID();
+        					System.out.println("There were two guys with same id:\n" + name + ", " + creationDate + "\n" + dao.get(bannedID.get(c)).getName() + ", " + dao.get(bannedID.get(c)).getCreationDate() + "\nSo I changed the id of second guy to " + idik);   					
+        					dao.get(bannedID.get(c)).setID(idik);
+        					bannedID.add(idik);  
+        					throw new LimitException("");
+        				}
+        				else if (possible_ID < DataDAO.getIDCounter()) {
+        					Worker w = dao.get(possible_ID);
+        					this.id = possible_ID;
+        					long idik = Worker.findPossibleID();
+        					w.setID(idik);
+        					bannedID.add(idik);
+        				}
+        				else {
+	        				this.id = Worker.findPossibleID();
+	        				bannedID.add(this.id);
+	        				if(this.id == -1) {
+	        					throw new LimitException("Our dear " + name + " was deleted from collection, cause there couldn't be more than 1000 people in bd");      
+	        				}
+        				}
+        				break;
+        			}
+        			else if(c == bannedID.size() - 1) {
+        				this.id = possible_ID;
+        				bannedID.add(this.id);
+        				break;
+        			}
+        		}
+    		}
+    		catch(IllegalArgumentException e) {
+				this.id = Worker.findPossibleID();
+				bannedID.add(this.id);
+				throw new LimitException("Id should be type long, so we'll fix it\n" + "Id of " + name + " was set to appropriate one: " + this.id);
+    		}
     	}
     }
-    
+    public void setID(long id) {
+    	for(int c = 0; c < bannedID.size(); c++) {
+    		if(id == bannedID.get(c)) {
+    			this.id = Worker.findPossibleID();
+    			bannedID.add(this.id);
+    			//DataDAO.incrementID();
+    			break;
+    		}
+    		else if(c == bannedID.size() - 1){
+    			this.id = id;
+    			bannedID.add(this.id);
+    			//DataDAO.incrementID();
+    			break;
+    		}
+    	}
+    }
+    public static long findPossibleID() {
+    	for(long i = DataDAO.getIDCounter(); i < 1001; i++) {
+    		for(int c = 0; c < bannedID.size(); c++) {
+    			if(i == bannedID.get(c)) {
+    				break;
+    			}
+    			if(c == bannedID.size() - 1){
+    				long id = i;
+    				return id;
+    			}
+    		}
+    	}
+    	return -1;
+    }
     public String getName() {
     	return name;
     }
@@ -72,13 +164,13 @@ public class Worker implements Comparable<Worker>{
     }
     public void setCoordinates(Coordinates coordinates) throws LimitException{
     	if(coordinates == null) {
-    		throw new LimitException("Coordinates couldn't be null");
+    		throw new LimitException("For " + name + ": Coordinates couldn't be null");
     	}
     	if(coordinates.getAbscissa() > 176) {
-    		throw new LimitException("x should be no more than 176");
+    		throw new LimitException("For " + name + ": x should be no more than 176");
     	}
     	if(coordinates.getOrdinate() > 729) {
-    		throw new LimitException("y is no more than 729");
+    		throw new LimitException("For " + name + ": y is no more than 729");
     	}
     	else {
     		this.coordinates = coordinates;
@@ -88,21 +180,33 @@ public class Worker implements Comparable<Worker>{
     public LocalDateTime getCreationDate() {
     	return creationDate;
     }
-    public void setCreationDate(LocalDateTime creationDate) throws NullException{
-    	if(creationDate == null) {
-    		throw new NullException("CreationDate can't be null");
+    public void setCreationDate(String date) throws NullException, LimitException{
+    	LocalDateTime cDate = LocalDateTime.now();
+    	if(cDate == null) {
+    		throw new NullException("For " + name + ": CreationDate can't be null");
+    	}
+    	else if(date == "") {
+    		creationDate = cDate;
     	}
     	else {
-    		this.creationDate = creationDate;
+    		try {
+    			creationDate = LocalDateTime.parse(date);
+    		}
+    		catch(DateTimeParseException e) {
+    			creationDate = LocalDateTime.now();
+    			System.out.println("For " + name + ": creationDate format is incorrect, so we'll set this argument to the time of this message");
+    		}
     	}
     }
-    
+    public void setCreationDate() {
+    	creationDate =  LocalDateTime.now();
+    }
     public long getSalary() {
     	return salary;
     }
     public void setSalary(long salary) throws LimitException{
     	if(salary <= 0) {
-    		throw new LimitException("Не платить зарплату?? Оставить человека еще и должным компании?? Профсоюз в ярости, будем созывать президиум для дальнейших разбирательств. Деменций, неси свиней\nПоле salary должно быть строго положительным, да побольше!");
+    		throw new LimitException("For " + name + ": Не платить зарплату?? Оставить человека еще и должным компании?? Профсоюз в ярости, будем созывать президиум для дальнейших разбирательств. Деменций, неси свиней\nПоле salary должно быть строго положительным");
     	}
     	else {
     		this.salary = salary;
@@ -121,7 +225,7 @@ public class Worker implements Comparable<Worker>{
     }
     public void setStatus(Status status) throws NullException{
     	if(status == null) {
-    		throw new NullException("Status couldn't be null");
+    		throw new NullException("For " + name + ": Status couldn't be null");
     	}
     	else {
     		this.status = status;
@@ -135,7 +239,10 @@ public class Worker implements Comparable<Worker>{
     	this.organization = organization;
     }
     
-    
+    public static void removeFromBanned(Long id) {
+    	//System.out.println(bannedID.toString());
+    	bannedID.remove(id);
+    }
     @Override
     public int hashCode() {
     	
@@ -151,7 +258,11 @@ public class Worker implements Comparable<Worker>{
     		return false;
     	}
     }
-    
+    @Override
+    public String toString() {
+    	DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    	return "Name: " + name + "\nSalary: " + salary + "\nPosition: " + position.toString() + "\nStatus: " + status.toString() + "\nOrganization: " + organization.getName() + ", " + organization.getType().toString() + "\nCoordinates: " + coordinates.getAbscissa() + ", " + coordinates.getOrdinate() + "\n" + "ID: " + id + ",\n" + "creationDate: " + creationDate.format(format) + "\n";
+    }
     @Override
     public int compareTo(Worker w) {
     	if(this.hashCode() > w.hashCode()) {

@@ -4,13 +4,26 @@ import org.json.*;
 public class Organization {
     private String fullName;
     private OrganizationType type;
+    private static boolean flag = true;
+    public static boolean getFlag() {
+    	return flag;
+    }
+    public static void setFlag() {
+    	flag = true;
+    }
     public Organization(JSONArray org) {
-    	setName(org.getString(0)); //разобраться в чем разница между optString и getString
+    	//setName(org.getString(0)); //разобраться в чем разница между optString и getString
     	try {
+    		setName(org.getString(0));
     		setType(OrganizationType.valueOf(org.getString(1)));
     	}
     	catch(IllegalArgumentException e) {
-    		System.out.println("Aavilable organization types are: " + OrganizationType.strConvert());
+    		flag = false;
+    		System.out.println("For " + fullName + ": Available organization types are: " + OrganizationType.strConvert());
+    	}
+    	catch(JSONException e) {
+    		flag = false;
+    		System.out.println(e.getMessage());
     	}
     }
     public Organization(String fullName, String type) {
@@ -19,7 +32,8 @@ public class Organization {
     		setType(OrganizationType.valueOf(type));
     	}
     	catch(IllegalArgumentException e) {
-    		System.out.println("Aavilable organization types are: " + OrganizationType.strConvert());
+    		flag = false;
+    		System.out.println("Available organization types are: " + OrganizationType.strConvert());
     	}
     }
     

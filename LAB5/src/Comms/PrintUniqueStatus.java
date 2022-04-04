@@ -1,5 +1,7 @@
 package Comms;
 import GivenClasses.*;
+
+import java.util.ArrayDeque;
 import java.util.LinkedHashSet;
 
 public class PrintUniqueStatus implements Commands{
@@ -14,7 +16,8 @@ public class PrintUniqueStatus implements Commands{
 		String list = "";
 		for(Worker w : bd) {
 			String person = "";
-			person = "\n" + w.getName() + ": " + w.getStatus().toString();
+			person = w.toString();
+			//person = "\n" + w.getName() + ": " + w.getStatus().toString();
 			list += person;
 		}
 		return list;
@@ -27,5 +30,15 @@ public class PrintUniqueStatus implements Commands{
 	@Override
 	public String getName() {
 		return "print_unique_status";
+	}
+	@Override
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+		PrintUniqueStatus prntu = new PrintUniqueStatus();
+		if(q != null && q.size() == 7) {
+			q.removeFirst();
+		}
+		q.addLast(prntu);
+		System.out.println(prntu.print_unique_status(dao));
+		return q;
 	}
 }

@@ -1,4 +1,6 @@
 package Comms;
+import java.util.ArrayDeque;
+
 import Exceptions.LimitException;
 import Exceptions.NullException;
 import GivenClasses.*;
@@ -19,7 +21,7 @@ public class Update implements Commands{
 			throw new NullException("There is no guy with such id");
 		}
 		else {
-			if(args.length == 0 || args.length > 8) {
+			if(args.length <= 0) {
 				throw new LimitException("The number of available args for update function is from 1 to 8. You also need to enter id firstly. NULL for position and organization type are possible, null for company name\nOnly one space between arguments");
 			}
 			else {
@@ -90,5 +92,38 @@ public class Update implements Commands{
 	@Override
 	public String getName() {
 		return "update";
+	}
+	@Override
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+		Update upd = new Update();
+		if(q != null && q.size() == 7) {
+			q.removeFirst();
+		}
+		q.addLast(upd);
+		String[] args = new String[line.length-1];
+		for(int i = 0; i < line.length-1; i++) {
+			args[i] = line[i+1];
+		}
+		try {
+			long id = Long.valueOf(args[0]);
+			String[] arg = new String[args.length-1];
+			for(int i = 0; i < args.length-1; i++) {
+				arg[i] = args[i+1];
+			}
+			upd.update_by_id(dao, id, arg);
+		}
+		catch(IllegalArgumentException e) {
+			System.out.println("Id should be type long");
+		}
+		catch(LimitException e) {
+			System.out.println(e.getMessage());
+		}
+		catch(NullException e) {
+			System.out.println(e.getMessage());
+		}
+		catch(ArrayIndexOutOfBoundsException e) {
+			System.out.println("There should be an index argument");
+		}
+		return q;
 	}
 }

@@ -1,4 +1,6 @@
 package Comms;
+import java.util.ArrayDeque;
+
 import GivenClasses.*;
 
 public class Remove implements Commands{
@@ -24,5 +26,24 @@ public class Remove implements Commands{
 	@Override
 	public String getName() {
 		return "remove_by_id";
+	}
+	@Override
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+		Remove rmv = new Remove();
+		if(q != null && q.size() == 7) {
+			q.removeFirst();
+		}
+		q.addLast(rmv);
+		try {
+			long id = Long.valueOf(line[1]);
+			rmv.remove_by_id(dao, id);
+		}
+		catch(IllegalArgumentException e) {
+			System.out.println("Id should be type long");
+		}
+		catch(ArrayIndexOutOfBoundsException e) {
+			System.out.println("There should be an index argument");
+		}
+		return q;
 	}
 }

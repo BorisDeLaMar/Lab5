@@ -18,7 +18,8 @@ public class PrintDescending implements Commands{
 		for(int i = bd.size() - 1; i >= 0; i--) {
 			String person = "";
 			Worker w = sorted.get(i);
-			person = "\nName: " + w.getName() + "\nSalary: " + w.getSalary() + "\nPosition: " + w.getPosition().toString() + "\nStatus: " + w.getStatus().toString() + "\nOrganization: " + w.getOrganization().getName() + ", " + w.getOrganization().getType().toString() + "\nCoordinates: " + w.getCoordinates().getAbscissa() + ", " + w.getCoordinates().getOrdinate();
+			person = w.toString();
+			//person = "\nName: " + w.getName() + "\nSalary: " + w.getSalary() + "\nPosition: " + w.getPosition().toString() + "\nStatus: " + w.getStatus().toString() + "\nOrganization: " + w.getOrganization().getName() + ", " + w.getOrganization().getType().toString() + "\nCoordinates: " + w.getCoordinates().getAbscissa() + ", " + w.getCoordinates().getOrdinate();
 			list += person;
 		}
 		return list;
@@ -31,5 +32,15 @@ public class PrintDescending implements Commands{
 	@Override
 	public String getName() {
 		return "print_descending";
+	}
+	@Override
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+		PrintDescending prnt = new PrintDescending();
+		if(q != null && q.size() == 7) {
+			q.removeFirst();
+		}
+		q.addLast(prnt);
+		System.out.println(prnt.print_descending(dao));
+		return q;
 	}
 }

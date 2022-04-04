@@ -1,5 +1,7 @@
 package Comms;
 
+import java.util.ArrayDeque;
+import java.time.format.*;
 import java.util.LinkedHashSet;
 
 import GivenClasses.Worker;
@@ -18,7 +20,8 @@ public class Show implements Commands{
 		String list = "";
 		String person;
 		for(Worker w : bd) {
-			person = "Name: " + w.getName() + "\nSalary: " + w.getSalary() + "\nPosition: " + w.getPosition().toString() + "\nStatus: " + w.getStatus().toString() + "\nOrganization: " + w.getOrganization().getName() + ", " + w.getOrganization().getType().toString() + "\nCoordinates: " + w.getCoordinates().getAbscissa() + ", " + w.getCoordinates().getOrdinate() + "\n";
+			person = w.toString();
+			//person = "Name: " + w.getName() + "\nSalary: " + w.getSalary() + "\nPosition: " + w.getPosition().toString() + "\nStatus: " + w.getStatus().toString() + "\nOrganization: " + w.getOrganization().getName() + ", " + w.getOrganization().getType().toString() + "\nCoordinates: " + w.getCoordinates().getAbscissa() + ", " + w.getCoordinates().getOrdinate() + "\n" + "ID: " + w.getId() + ",\n" + "creationDate: " + w.getCreationDate() + "\n";
 			list += person;
 		}
 		return list;
@@ -31,5 +34,15 @@ public class Show implements Commands{
 	@Override 
 	public String getGist() {
 		return "prints all the elements of collection";
+	}
+	@Override
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+		Show show = new Show();
+		if(q != null && q.size() == 7) {
+			q.removeFirst();
+		}
+		q.addLast(show);
+		System.out.println(show.show(dao));
+		return q;
 	}
 }
