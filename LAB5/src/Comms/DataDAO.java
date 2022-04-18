@@ -18,14 +18,7 @@ public class DataDAO implements DAO<Worker>{
 	*/
 	
 	private LinkedHashSet<Worker> database = new LinkedHashSet<Worker>();
-	String filepath;
-	
-	String hname;
-	long hsalary;
-	Position hpos; //h - heroe's
-	Status hstatus;
-	Organization horganization;		
-	Coordinates hcoordinates;
+	private String filepath;
 	private static boolean flag;
 	public static boolean getFlag() {
 		return flag;
@@ -48,8 +41,15 @@ public class DataDAO implements DAO<Worker>{
 	}
 	
 	/**Чтение из файла*/
-	//@Override
-	public void DateRead(String filename, DAO<Worker> dao) {
+	// TODO
+	@Override
+	public void DateRead(String filename) {
+		String hname;
+		long hsalary;
+		Position hpos; //h - heroe's
+		Status hstatus;
+		Organization horganization;		
+		Coordinates hcoordinates;
 		/** 
 		 *Add function
 		 *@param String filename
@@ -81,7 +81,7 @@ public class DataDAO implements DAO<Worker>{
 					horganization = new Organization(org);
 					JSONArray cord = o.getJSONArray("coordinates");
 					hcoordinates = new Coordinates(cord);
-					Worker worker = new Worker(hname, hsalary, hpos, hstatus, horganization, hcoordinates, str_id, creationDate, dao);
+					Worker worker = new Worker(hname, hsalary, hpos, hstatus, horganization, hcoordinates, str_id, creationDate, this);
 					if(worker.getId() == -1) {
 						this.delete(worker);
 					}
@@ -97,6 +97,7 @@ public class DataDAO implements DAO<Worker>{
 			}
 			catch(JSONException e) {
 				flag = false;
+				// TODO
 				System.out.println(e.getMessage());
 			}
 		}
@@ -138,5 +139,10 @@ public class DataDAO implements DAO<Worker>{
 	@Override
 	public LinkedHashSet<Worker> getAll(){
 		return database;
+	}
+	@Override
+	public void saveCollection(String s) {
+		Save sv  = new Save();
+		sv.save(this, s);
 	}
 }

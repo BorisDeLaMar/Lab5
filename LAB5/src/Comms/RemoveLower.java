@@ -1,10 +1,11 @@
 package Comms;
 import GivenClasses.*;
 
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
-
+//import java.util.LinkedHashSet;
+import java.io.*;
 public class RemoveLower implements Commands{
 	Remove rm = new Remove();
 	/** 
@@ -19,7 +20,10 @@ public class RemoveLower implements Commands{
 			ArrayList<Worker> dd = new ArrayList<Worker>(dao.getAll());
 			for(int i = 0; i < dd.size(); i++) {
 				if(dd.get(i).hashCode() < w.hashCode()) {
-						rm.remove_by_id(dao, dd.get(i).getId());
+					if(GistStaff.getFlag() == false) {
+						System.out.println("Worker successfully removed from collection");
+					}
+					rm.remove_by_id(dao, dd.get(i).getId());
 				}
 			}
 		}
@@ -37,14 +41,15 @@ public class RemoveLower implements Commands{
 		return "remove_lower";
 	}
 	@Override
-	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, BufferedReader on) throws IOException{
 		RemoveLower rmvl = new RemoveLower();
-		if(q != null && q.size() == 7) {
-			q.removeFirst();
-		}
+		q = History.cut(q);
 		q.addLast(rmvl);
+		if(GistStaff.getFlag() == false) {
+			System.out.print("Enter id: ");
+		}
 		try {
-			long id = Long.valueOf(line[1]);
+			long id = Long.valueOf(on.readLine().split(" ")[0]);
 			rmvl.remove_lower(dao, id);
 		}
 		catch(IllegalArgumentException e) {

@@ -1,5 +1,6 @@
 package Comms;
 import java.util.ArrayDeque;
+import java.io.BufferedReader;
 import java.util.ArrayList;
 
 import GivenClasses.Worker;
@@ -28,11 +29,9 @@ public class Help extends AbstractHelp implements Commands{
 		return "help";
 	}
 	@Override
-	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, BufferedReader on){
 		Help hlp = new Help();
-		if(q != null && q.size() == 7) {
-			q.removeFirst();
-		}
+		q = History.cut(q);
 		q.addLast(hlp);
 		System.out.println(hlp.help(Help.getLst()));
 		return q;

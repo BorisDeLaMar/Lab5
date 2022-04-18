@@ -4,7 +4,7 @@ package Comms;
 import java.util.ArrayDeque;
 
 import GivenClasses.Worker;
-
+import java.io.BufferedReader;
 public class Exit implements Commands{
 	private static boolean flag = true;
 	/** 
@@ -13,6 +13,9 @@ public class Exit implements Commands{
 	 *@author BARIS  
 	*/
 	public static void exit() {
+		if(GistStaff.getFlag() == false) {
+			System.out.print("Bye-bye");
+		}
 		flag = false;
 	}
 	public static boolean getExit() {
@@ -28,11 +31,9 @@ public class Exit implements Commands{
 		return "exit";
 	}
 	@Override
-	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, BufferedReader on){
 		Exit exe = new Exit();
-		if(q != null && q.size() == 7) {
-			q.removeFirst();
-		}
+		q = History.cut(q);
 		q.addLast(exe);
 		Exit.exit();
 		return q;

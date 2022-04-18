@@ -1,6 +1,7 @@
 package Comms;
 
 import java.util.ArrayDeque;
+import java.io.BufferedReader;
 import java.time.format.*;
 import java.util.LinkedHashSet;
 
@@ -16,7 +17,7 @@ public class Show implements Commands{
 	
 	public String show(DAO<Worker> d) {
 		dao = d;
-		LinkedHashSet<Worker> bd = dao.getAll();
+		LinkedHashSet<Worker> bd = new LinkedHashSet<Worker>(dao.getAll());
 		String list = "";
 		String person;
 		for(Worker w : bd) {
@@ -36,11 +37,9 @@ public class Show implements Commands{
 		return "prints all the elements of collection";
 	}
 	@Override
-	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, BufferedReader on){
 		Show show = new Show();
-		if(q != null && q.size() == 7) {
-			q.removeFirst();
-		}
+		q = History.cut(q);
 		q.addLast(show);
 		System.out.println(show.show(dao));
 		return q;

@@ -8,18 +8,10 @@ import java.time.format.*;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 
-public class Worker implements Comparable<Worker>{
-	
-    private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
-    private String name; //Поле не может быть null, Строка не может быть пустой
-    private Coordinates coordinates; //Поле не может быть null
-    private LocalDateTime creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
-    private long salary; //Значение поля должно быть больше 0
-    private Position position; //Поле может быть null
-    private Status status; //Поле не может быть null
-    private Organization organization; //Поле может быть null 
+public class Worker extends AbstractWorker implements Comparable<Worker>{
     public static ArrayList<Long> bannedID = new ArrayList<Long>();
-    boolean IdNotFromFile = true;
+    // TODO
+    private boolean IdNotFromFile = true;
     public boolean getFlag() {
     	return IdNotFromFile;
     }
@@ -62,6 +54,9 @@ public class Worker implements Comparable<Worker>{
     public void setId(String id, DAO<Worker> dao) throws NullException, LimitException{
     	if(id == "") {
     		this.id = Worker.findPossibleID();
+			if(this.id == -1) {
+				throw new LimitException("Our dear " + name + " was deleted from collection, cause there couldn't be more than 1000 people in bd");      
+			}
     		bannedID.add(this.id);
     	}
     	else {
@@ -73,33 +68,42 @@ public class Worker implements Comparable<Worker>{
         			//System.out.println(possible_ID + " " + bannedID.get(c));
         			if(possible_ID <= 0) {
         				this.id = Worker.findPossibleID();
+        				if(this.id == -1) {
+        					throw new LimitException("Our dear " + name + " was deleted from collection, cause there couldn't be more than 1000 people in bd");      
+        				}
         				bannedID.add(this.id);
         				throw new LimitException("Id can't be below 1, so we changed it to appropriate one (" + this.id + ") for " + name);
         			}
-        			if(possible_ID == bannedID.get(c) || possible_ID <= 0) {
+        			if(possible_ID == bannedID.get(c)) {
         				if(false == dao.get(bannedID.get(c)).getFlag()) {
         					//System.out.println(bannedID.get(c));
         					//Worker w = dao.get(possible_ID);
-        					this.id = possible_ID;
         					long idik = Worker.findPossibleID();
-        					System.out.println("There were two guys with same id:\n" + name + ", " + creationDate + "\n" + dao.get(bannedID.get(c)).getName() + ", " + dao.get(bannedID.get(c)).getCreationDate() + "\nSo I changed the id of second guy to " + idik);   					
+        					if(idik == -1) {
+        						throw new LimitException("Our dear " + name + " was deleted from collection, cause there couldn't be more than 1000 people in bd");      
+        					}
+        					this.id = possible_ID;
+        					String s = "There were two guys with same id:\n" + name + ", " + creationDate + "\n" + dao.get(bannedID.get(c)).getName() + ", " + dao.get(bannedID.get(c)).getCreationDate() + "\nSo I changed the id of second guy to " + idik;   					
         					dao.get(bannedID.get(c)).setID(idik);
         					bannedID.add(idik);  
-        					throw new LimitException("");
+        					throw new LimitException(s);
         				}
         				else if (possible_ID < DataDAO.getIDCounter()) {
         					Worker w = dao.get(possible_ID);
-        					this.id = possible_ID;
         					long idik = Worker.findPossibleID();
+        					if(idik == -1) {
+        						throw new LimitException("Our dear " + name + " was deleted from collection, cause there couldn't be more than 1000 people in bd");      
+        					}
+        					this.id = possible_ID;
         					w.setID(idik);
         					bannedID.add(idik);
         				}
         				else {
 	        				this.id = Worker.findPossibleID();
-	        				bannedID.add(this.id);
 	        				if(this.id == -1) {
 	        					throw new LimitException("Our dear " + name + " was deleted from collection, cause there couldn't be more than 1000 people in bd");      
 	        				}
+	        				bannedID.add(this.id);
         				}
         				break;
         			}
@@ -112,15 +116,21 @@ public class Worker implements Comparable<Worker>{
     		}
     		catch(IllegalArgumentException e) {
 				this.id = Worker.findPossibleID();
+				if(this.id == -1) {
+					throw new LimitException("Our dear " + name + " was deleted from collection, cause there couldn't be more than 1000 people in bd");      
+				}
 				bannedID.add(this.id);
 				throw new LimitException("Id should be type long, so we'll fix it\n" + "Id of " + name + " was set to appropriate one: " + this.id);
     		}
     	}
     }
-    public void setID(long id) {
+    public void setID(long id) throws LimitException{
     	for(int c = 0; c < bannedID.size(); c++) {
     		if(id == bannedID.get(c)) {
     			this.id = Worker.findPossibleID();
+				if(this.id == -1) {
+					throw new LimitException("Our dear " + name + " was deleted from collection, cause there couldn't be more than 1000 people in bd");      
+				}
     			bannedID.add(this.id);
     			//DataDAO.incrementID();
     			break;
@@ -265,10 +275,10 @@ public class Worker implements Comparable<Worker>{
     }
     @Override
     public int compareTo(Worker w) {
-    	if(this.hashCode() > w.hashCode()) {
+    	if(this.getSalary() > w.getSalary()) {
     		return 1;
     	}
-    	else if(this.hashCode() == w.hashCode()) {
+    	else if(this.getSalary() == w.getSalary()) {
     		return 0;
     	}
     	else {

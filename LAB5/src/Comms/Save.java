@@ -1,5 +1,6 @@
 package Comms;
 import GivenClasses.*;
+import java.io.BufferedReader;
 
 
 import java.util.ArrayDeque;
@@ -26,21 +27,23 @@ public class Save implements Commands{
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(filepath));
 			//File fl = new File(filepath);
-			LinkedHashSet<Worker> bd = dao.getAll();
+			LinkedHashSet<Worker> bd = new LinkedHashSet<Worker>(dao.getAll());
 			//JsonObject arr = Json.createObjectBuilder().build();
 			//JsonObject arr = Json.createObjectBuilder().build();
 			out.write("{\n\t\"workers\":[");
 			int i = 0;
 			for(Worker w : bd) { 
-				out.write("\n\t\t{\n\t\t\t");
-				out.write("\"name\":" + "\"" +w.getName() + "\"" + ",\n\t\t\t");
-				out.write("\"salary\":" + "\"" + w.getSalary() + "\"" + ",\n\t\t\t");
-				out.write("\"position\":" + "\"" + w.getPosition().toString() + "\"" + ",\n\t\t\t");
-				out.write("\"status\":" + "\"" + w.getStatus().toString() + "\"" + ",\n\t\t\t");
-				out.write("\"organization\":[\n\t\t\t\t" + "\"" + w.getOrganization().getName() + "\"" + ",\n\t\t\t\t" + "\"" + w.getOrganization().getType().toString() + "\"" +"\n\t\t\t],\n\t\t\t");
-				out.write("\"coordinates\":[\n\t\t\t\t" + "\"" + w.getCoordinates().getAbscissa() + "\"" + ",\n\t\t\t\t" + "\"" + w.getCoordinates().getOrdinate() + "\"" +"\n\t\t\t],\n\t\t\t");
-				out.write("\"ID\":\"" + w.getId() + "\",\n\t\t\t");
-				out.write("\"CreationDate\":\"" + w.getCreationDate() + "\"\n\t\t}");
+				if(w.getId() > 0) {
+					out.write("\n\t\t{\n\t\t\t");
+					out.write("\"name\":" + "\"" +w.getName() + "\"" + ",\n\t\t\t");
+					out.write("\"salary\":" + "\"" + w.getSalary() + "\"" + ",\n\t\t\t");
+					out.write("\"position\":" + "\"" + w.getPosition().toString() + "\"" + ",\n\t\t\t");
+					out.write("\"status\":" + "\"" + w.getStatus().toString() + "\"" + ",\n\t\t\t");
+					out.write("\"organization\":[\n\t\t\t\t" + "\"" + w.getOrganization().getName() + "\"" + ",\n\t\t\t\t" + "\"" + w.getOrganization().getType().toString() + "\"" +"\n\t\t\t],\n\t\t\t");
+					out.write("\"coordinates\":[\n\t\t\t\t" + "\"" + w.getCoordinates().getAbscissa() + "\"" + ",\n\t\t\t\t" + "\"" + w.getCoordinates().getOrdinate() + "\"" +"\n\t\t\t],\n\t\t\t");
+					out.write("\"ID\":\"" + w.getId() + "\",\n\t\t\t");
+					out.write("\"CreationDate\":\"" + w.getCreationDate() + "\"\n\t\t}");
+				}
 				/*
 				JsonObject val = Json.createObjectBuilder()
 						.add("name", w.getName())
@@ -66,6 +69,9 @@ public class Save implements Commands{
 			}
 			out.write("\n\t]\n}");
 			out.close();
+			if(GistStaff.getFlag() == false) {
+				System.out.println("Collection saved to file");
+			}
 		}
 		catch(IOException e) {
 			e.printStackTrace();
@@ -81,11 +87,9 @@ public class Save implements Commands{
 		return "save";
 	}
 	@Override
-	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, BufferedReader on){
 		Save save = new Save();
-		if(q != null && q.size() == 7) {
-			q.removeFirst();
-		}
+		q = History.cut(q);
 		q.addLast(save);
 		String filepath = System.getenv("FPATH");
 		save.save(dao, filepath);

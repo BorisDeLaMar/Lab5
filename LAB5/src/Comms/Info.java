@@ -1,7 +1,8 @@
 package Comms;
 
 import java.io.IOException;
-import java.time.format.*;
+import java.io.BufferedReader;
+//import java.time.format.*;
 import java.nio.file.*;
 import java.nio.file.attribute.*;
 import java.time.format.DateTimeFormatter;
@@ -42,11 +43,9 @@ public class Info implements Commands{
 		return "info";
 	}
 	@Override
-	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, BufferedReader on){
 		Info inf = new Info();
-		if(q != null && q.size() == 7) {
-			q.removeFirst();
-		}
+		q = History.cut(q);
 		q.addLast(inf);
 		System.out.println(inf.info(dao));
 		return q;

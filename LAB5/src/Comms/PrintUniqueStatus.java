@@ -1,5 +1,6 @@
 package Comms;
 import GivenClasses.*;
+import java.io.BufferedReader;
 
 import java.util.ArrayDeque;
 import java.util.LinkedHashSet;
@@ -12,12 +13,12 @@ public class PrintUniqueStatus implements Commands{
 	*/
 	
 	public String print_unique_status(DAO<Worker> dao) {
-		LinkedHashSet<Worker> bd = dao.getAll();
+		LinkedHashSet<Worker> bd = new LinkedHashSet<Worker>(dao.getAll());
 		String list = "";
 		for(Worker w : bd) {
 			String person = "";
-			person = w.toString();
-			//person = "\n" + w.getName() + ": " + w.getStatus().toString();
+			//person = w.toString();
+			person = w.getName() + ": " + w.getStatus().toString() + "\n";
 			list += person;
 		}
 		return list;
@@ -32,11 +33,9 @@ public class PrintUniqueStatus implements Commands{
 		return "print_unique_status";
 	}
 	@Override
-	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, BufferedReader on){
 		PrintUniqueStatus prntu = new PrintUniqueStatus();
-		if(q != null && q.size() == 7) {
-			q.removeFirst();
-		}
+		q = History.cut(q);
 		q.addLast(prntu);
 		System.out.println(prntu.print_unique_status(dao));
 		return q;

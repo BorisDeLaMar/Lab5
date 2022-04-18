@@ -1,5 +1,6 @@
 package Comms;
 import java.util.ArrayDeque;
+import java.io.*;
 
 import GivenClasses.*;
 
@@ -15,6 +16,9 @@ public class Remove implements Commands{
 				System.out.println("There's no guy with such id");
 			}
 			else {
+				if(GistStaff.getFlag() == false) {
+					System.out.println("Worker successfully removed from collection");
+				}
 				dao.delete(w);
 			}
 	}
@@ -28,14 +32,15 @@ public class Remove implements Commands{
 		return "remove_by_id";
 	}
 	@Override
-	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, BufferedReader on) throws IOException{
 		Remove rmv = new Remove();
-		if(q != null && q.size() == 7) {
-			q.removeFirst();
-		}
+		q = History.cut(q);
 		q.addLast(rmv);
+		if(GistStaff.getFlag() == false) {
+			System.out.print("Enter id: ");
+		}
 		try {
-			long id = Long.valueOf(line[1]);
+			long id = Long.valueOf(on.readLine().split(" ")[0]);
 			rmv.remove_by_id(dao, id);
 		}
 		catch(IllegalArgumentException e) {

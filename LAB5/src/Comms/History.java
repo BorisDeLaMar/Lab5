@@ -1,5 +1,6 @@
 package Comms;
 import java.util.ArrayDeque;
+import java.io.BufferedReader;
 
 import GivenClasses.Worker;
 
@@ -21,6 +22,12 @@ public class History implements Commands{
 		return list;
 		
 	}
+	public static ArrayDeque<Commands> cut(ArrayDeque<Commands> q) {
+		if(q != null && q.size() == 7) {
+			q.removeFirst();
+		}
+		return q;
+	}
 	
 	@Override
 	public String getGist() {
@@ -31,12 +38,10 @@ public class History implements Commands{
 		return "history";
 	}
 	@Override
-	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, String[] line){
+	public ArrayDeque<Commands> executeCommand(DAO<Worker> dao, ArrayDeque<Commands> q, BufferedReader on){
 		History history = new History();
 		System.out.println(history.history(q));
-		if(q != null && q.size() == 7) {
-			q.removeFirst();
-		}
+		q = History.cut(q);
 		q.addLast(history);
 		return q;
 	}
