@@ -1,0 +1,21 @@
+show
+help
+execute_script
+C:\vpd\BomBomBom.txt
+add
+gg
+22
+MANAGER
+HIRED
+gg TRUST
+2 3
+update
+1
+gg
+22
+MANAGER
+HIRED
+gg TRUST
+2 3
+execute_script
+C:\vpd\PudgePudgePudgePudge.txt
